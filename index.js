@@ -2,6 +2,24 @@
 let PScore = 0;
 let CScore = 0;
 
+const choiceWrapper = document.querySelector(".choices");
+const buttons = choiceWrapper.children
+choiceWrapper.addEventListener('click', (event) => {
+    const isButton = event.target.nodeName === 'BUTTON';
+    if (!isButton) { //do nothing if not a button
+    console.log("Not a button")
+    return;
+    }
+    let playerSelection = String(event.target.id);
+    round(playerSelection)
+});
+
+const resetButton = document.querySelector(".resetGame");
+resetButton.addEventListener('click', (event) => {
+    resetGame()
+});
+
+resetButton.disabled = true;
 
 function getComputerChoice() {
    let choice = Math.floor(Math.random()*3)
@@ -84,20 +102,36 @@ function round(playerSelection){
     }
 
     if (PScore >= 5 || CScore >= 5){
-           console.log("Game Over")
+           gameOver()
     return;
 }
 }
 
-
-const choiceWrapper = document.querySelector(".choices");
-choiceWrapper.addEventListener('click', (event) => {
-    const isButton = event.target.nodeName === 'BUTTON';
-    if (!isButton) { //do nothing if not a button
-    console.log("Not a button")
-    return;
+function gameOver() {
+    if (PScore > CScore){
+        displayMessage("You win! Click Reset to restart");
+    } else {
+        displayMessage("You lose! Click Reset to restart");
     }
-    let playerSelection = String(event.target.id);
-    round(playerSelection)
+    for(var i=0; i<buttons.length; i++){
+        var child = buttons[i];
+        child.disabled = true;
+    resetButton.disabled = false;
+    }
+}
 
-});
+
+
+function resetGame(){
+    PScore = 0;
+    CScore = 0;
+    updateScoreboard();
+    displayMessage("Select an option to start.");
+    for(var i=0; i<buttons.length; i++){
+        var child = buttons[i];
+        child.disabled = false;
+    resetButton.disabled = true;
+    }
+}
+
+
